@@ -1,7 +1,11 @@
 #!/bin/bash
-export SYBASE=/opt/sybase
-source /opt/sybase/SYBASE.sh
-sh /opt/sybase/SYBASE.sh && sh /opt/sybase/ASE-16_0/install/RUN_MYSYBASE > /dev/null &
+
+SYBASE_USER=${SYBASE_USER:="tester"}
+SYBASE_PASSWORD=${SYBASE_PASSWORD:="guest1234"}
+SYBASE_DB=${SYBASE_DB:="testdb"}
+
+source ${SYBASE_HOME}/SYBASE.sh
+sh ${SYBASE_HOME}/SYBASE.sh && sh ${SYBASE_HOME}/ASE-16_0/install/RUN_MYSYBASE > /dev/null &
 
 #waiting for sybase to start
 export STATUS=0
@@ -10,7 +14,7 @@ echo ===============  WAITING FOR master.dat SPACE ALLOCATION ==================
 while (( $i < 60 )); do
 	sleep 1
 	i=$((i+1))
-	STATUS=$(grep "Performing space allocation for device '/opt/sybase/data/master.dat'" /opt/sybase/ASE-16_0/install/MYSYBASE.log | wc -c)
+	STATUS=$(grep "Performing space allocation for device '${SYBASE_HOME}/data/master.dat'" ${SYBASE_HOME}/ASE-16_0/install/MYSYBASE.log | wc -c)
 	if (( $STATUS > 300 )); then
 	  break
 	fi
@@ -22,35 +26,19 @@ j=1
 while (( $j < 30 )); do
   sleep 1
   j=$((j+1))
-  STATUS2=$(grep "Finished initialization." /opt/sybase/ASE-16_0/install/MYSYBASE.log | wc -c)
+  STATUS2=$(grep "Finished initialization." ${SYBASE_HOME}/ASE-16_0/install/MYSYBASE.log | wc -c)
   if (( $STATUS2 > 350 )); then
     break
   fi
 done
 
 echo =============== SYBASE STARTED ==========================
-cd /opt/sybase
+cd ${SYBASE_HOME}
 
-if [ ! -z $SYBASE_USER ]; then
-	echo "SYBASE_USER: $SYBASE_USER"	
-else
-	SYBASE_USER=tester
-	echo "SYBASE_USER: $SYBASE_USER"
-fi
-
-if [ ! -z $SYBASE_PASSWORD ]; then
-	echo "SYBASE_PASSWORD: $SYBASE_PASSWORD"	
-else
-	SYBASE_PASSWORD=guest1234
-	echo "SYBASE_PASSWORD: $SYBASE_PASSWORD"
-fi
-
-if [ ! -z $SYBASE_DB ]; then
-	echo "SYBASE_DB: $SYBASE_DB"	
-else
-	SYBASE_DB=testdb
-	echo "SYBASE_DB: $SYBASE_DB"
-fi
+echo "SYBASE_USER: $SYBASE_USER"	
+echo "SYBASE_PASSWORD: $SYBASE_PASSWORD"	
+echo "SYBASE_DB: $SYBASE_DB"	
+echo "SYBASE_DB: $SYBASE_DB"
 
 echo =============== CREATING LOGIN/PWD ==========================
 cat <<-EOSQL > init1.sql
@@ -80,7 +68,7 @@ sp_dboption $SYBASE_DB, "select into", true
 go
 EOSQL
 
-/opt/sybase/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init1.sql"
+${SYBASE_HOME}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init1.sql"
 
 echo =============== CREATING DB ==========================
 cat <<-EOSQL > init2.sql
@@ -104,7 +92,7 @@ commit
 go
 EOSQL
 
-/opt/sybase/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init2.sql"
+${SYBASE_HOME}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init2.sql"
 
 #echo =============== CREATING SCHEMA ==========================
 #cat <<-EOSQL > init3.sql
@@ -114,7 +102,7 @@ EOSQL
 #go
 #
 #EOSQL
-#/opt/sybase/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init3.sql"
+#${SYBASE_HOME}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init3.sql"
 
 echo =============== SYBASE INITIALIZED ==========================
 
