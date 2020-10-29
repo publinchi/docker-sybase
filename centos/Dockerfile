@@ -2,7 +2,8 @@ FROM nguoianphu/docker-sybase:latest
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV SYBASE_HOME="/opt/sybase"
+ENV SYBASE="/opt/sybase"
+ENV PATH=${PATH}:${SYBASE}/ASE-16_0/bin/
 
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini

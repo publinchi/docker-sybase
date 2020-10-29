@@ -4,8 +4,8 @@ SYBASE_USER=${SYBASE_USER:="tester"}
 SYBASE_PASSWORD=${SYBASE_PASSWORD:="guest1234"}
 SYBASE_DB=${SYBASE_DB:="testdb"}
 
-source ${SYBASE_HOME}/SYBASE.sh
-sh ${SYBASE_HOME}/SYBASE.sh && sh ${SYBASE_HOME}/ASE-16_0/install/RUN_MYSYBASE > /dev/null &
+source ${SYBASE}/SYBASE.sh
+sh ${SYBASE}/SYBASE.sh && sh ${SYBASE}/ASE-16_0/install/RUN_MYSYBASE > /dev/null &
 
 #waiting for sybase to start
 export STATUS=0
@@ -14,7 +14,7 @@ echo ===============  WAITING FOR master.dat SPACE ALLOCATION ==================
 while (( $i < 60 )); do
 	sleep 1
 	i=$((i+1))
-	STATUS=$(grep "Performing space allocation for device '${SYBASE_HOME}/data/master.dat'" ${SYBASE_HOME}/ASE-16_0/install/MYSYBASE.log | wc -c)
+	STATUS=$(grep "Performing space allocation for device '${SYBASE}/data/master.dat'" ${SYBASE}/ASE-16_0/install/MYSYBASE.log | wc -c)
 	if (( $STATUS > 300 )); then
 	  break
 	fi
@@ -26,14 +26,14 @@ j=1
 while (( $j < 30 )); do
   sleep 1
   j=$((j+1))
-  STATUS2=$(grep "Finished initialization." ${SYBASE_HOME}/ASE-16_0/install/MYSYBASE.log | wc -c)
+  STATUS2=$(grep "Finished initialization." ${SYBASE}/ASE-16_0/install/MYSYBASE.log | wc -c)
   if (( $STATUS2 > 350 )); then
     break
   fi
 done
 
 echo =============== SYBASE STARTED ==========================
-cd ${SYBASE_HOME}
+cd ${SYBASE}
 
 echo "SYBASE_USER: $SYBASE_USER"	
 echo "SYBASE_PASSWORD: $SYBASE_PASSWORD"	
@@ -68,7 +68,7 @@ sp_dboption $SYBASE_DB, "select into", true
 go
 EOSQL
 
-${SYBASE_HOME}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init1.sql"
+${SYBASE}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init1.sql"
 
 echo =============== CREATING DB ==========================
 cat <<-EOSQL > init2.sql
@@ -92,7 +92,7 @@ commit
 go
 EOSQL
 
-${SYBASE_HOME}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init2.sql"
+${SYBASE}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init2.sql"
 
 #echo =============== CREATING SCHEMA ==========================
 #cat <<-EOSQL > init3.sql
@@ -102,7 +102,7 @@ ${SYBASE_HOME}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init2.sql"
 #go
 #
 #EOSQL
-#${SYBASE_HOME}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init3.sql"
+#${SYBASE}/OCS-16_0/bin/isql -Usa -PmyPassword -SMYSYBASE -i"./init3.sql"
 
 echo =============== SYBASE INITIALIZED ==========================
 

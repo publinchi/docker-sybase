@@ -1,13 +1,9 @@
-# Dockerfile for sybase server
-
-# docker build -t sybase .
-
-
 FROM centos:7
 
 LABEL MAINTAINER="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV SYBASE_HOME="/opt/sybase"
+ENV SYBASE="/opt/sybase"
+ENV PATH=${PATH}:${SYBASE}/ASE-16_0/bin/
 
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
@@ -65,17 +61,17 @@ RUN set -x \
 
 
 # Copy resource file
-RUN cp /opt/tmp/sybase-ase.rs ${SYBASE_HOME}/ASE-16_0/sybase-ase.rs
+RUN cp /opt/tmp/sybase-ase.rs ${SYBASE}/ASE-16_0/sybase-ase.rs
 
 # Build ASE server
-RUN source ${SYBASE_HOME}/SYBASE.sh \
- && ${SYBASE_HOME}/ASE-16_0/bin/srvbuildres -r ${SYBASE_HOME}/ASE-16_0/sybase-ase.rs
+RUN source ${SYBASE}/SYBASE.sh \
+ && ${SYBASE}/ASE-16_0/bin/srvbuildres -r ${SYBASE}/ASE-16_0/sybase-ase.rs
 
 # Change the Sybase interface
 # Set the Sybase startup script in entrypoint.sh
 
-RUN mv ${SYBASE_HOME}/interfaces ${SYBASE_HOME}/interfaces.backup \
- && cp /opt/tmp/interfaces ${SYBASE_HOME}/ \
+RUN mv ${SYBASE}/interfaces ${SYBASE}/interfaces.backup \
+ && cp /opt/tmp/interfaces ${SYBASE}/ \
  && cp /opt/tmp/sybase-entrypoint.sh /usr/local/bin/ \
  && chmod +x /usr/local/bin/sybase-entrypoint.sh \
  && ln -s /usr/local/bin/sybase-entrypoint.sh /sybase-entrypoint.sh
@@ -83,7 +79,7 @@ RUN mv ${SYBASE_HOME}/interfaces ${SYBASE_HOME}/interfaces.backup \
 
 # Setup the ENV
 # https://docs.docker.com/engine/reference/builder/#run
-# RUN ["/bin/bash", "-c", "source ${SYBASE_HOME}/SYBASE.sh"]
+# RUN ["/bin/bash", "-c", "source ${SYBASE}/SYBASE.sh"]
 
 EXPOSE 5000
 
@@ -91,7 +87,7 @@ EXPOSE 5000
 RUN find /opt/tmp/ -type f | xargs -L1 rm -f
 
 # Share the Sybase data directory
-#VOLUME ["${SYBASE_HOME}/data"]
+#VOLUME ["${SYBASE}/data"]
 
 # When run it
 # docker run -d -p 8000:5000 -p 8001:5001 --name my-sybase sybase
