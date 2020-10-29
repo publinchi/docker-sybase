@@ -2,7 +2,7 @@ FROM nguoianphu/docker-sybase:latest
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV SYBASE_HOME=/opt/sybase
+ENV SYBASE_HOME="/opt/sybase"
 
 ADD entrypoint.sh /
 

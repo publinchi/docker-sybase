@@ -7,7 +7,7 @@ FROM centos:7
 
 LABEL MAINTAINER="Florian JUDITH <florian.judith.b@gmail.com>"
 
-ENV SYBASE_HOME=/opt/sybase
+ENV SYBASE_HOME="/opt/sybase"
 
 # Adding resources
 
