@@ -75,7 +75,12 @@ RUN mv /opt/sybase/interfaces /opt/sybase/interfaces.backup \
 # https://docs.docker.com/engine/reference/builder/#run
 # RUN ["/bin/bash", "-c", "source /opt/sybase/SYBASE.sh"]
 
-ENTRYPOINT ["/sybase-entrypoint.sh"]
+ADD entrypoint.sh /
+
+RUN chmod +x /entrypoint.sh
+
+# ENTRYPOINT ["/sybase-entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 # CMD []
 
