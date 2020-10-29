@@ -1,16 +1,15 @@
 env:
   - BASE=centos
-  # Docker Repository
-  - REPO=fjudith/sybase
-  # Compute docker tag
-  - TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-
 
 sudo: required
 services:
   - docker
 
 before_install:
+  # Docker Repository
+  - export REPO=fjudith/sybase
+  # Compute docker tag
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - export VERSION=`cat VERSION`
 
 script: >-
