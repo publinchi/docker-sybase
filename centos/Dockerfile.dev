@@ -3,7 +3,7 @@ FROM centos:7
 LABEL MAINTAINER="Florian JUDITH <florian.judith.b@gmail.com>"
 
 ENV SYBASE="/opt/sybase"
-ENV PATH=${PATH}:${SYBASE}/ASE-16_0/bin/
+ENV PATH=${PATH}:${SYBASE}/ASE-16_0/bin/:${SYBASE}/OCS-16_0/bin
 
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
