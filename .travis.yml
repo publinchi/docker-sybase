@@ -12,18 +12,18 @@ before_install:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - export VERSION=`cat VERSION`
 
-script: >-
-  set -e
-  cd ${BASE}/
-  docker build -t ${REPO}:{VERSION} .
-  docker run -d --name sybase -p 5000:5000 ${REPO}:{VERSION}
-  sleep 30
-  docker logs sybase
-  docker exec -it sysbase isql -Usa -PmyPassword -SMYSYBASE
+script:
+  - set -e
+  - cd ${BASE}/
+  - docker build -t ${REPO}:{VERSION} .
+  - docker run -d --name sybase -p 5000:5000 ${REPO}:{VERSION}
+  - sleep 30
+  - docker logs sybase
+  - docker exec -it sysbase isql -Usa -PmyPassword -SMYSYBASE
 after_success: >-
   set -e
   if [[ $TRAVIS_PULL_REQUEST != "false" ]]; then
     echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin &&
-    docker tag ${REPO}:${VERSION} ${REPO}:${TAG}
+    docker tag ${REPO}:${VERSION} ${REPO}:${TAG} &&
     docker push ${REPO}:{TAG}
   fi
