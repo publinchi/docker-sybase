@@ -34,8 +34,8 @@ jobs:
           push: true
       
       - name: Test
-        uses: actions/checkout@v2
         run: |
+          ls -lha
           docker run -d --name sybase -p 5000:5000 docker.io/fjudith/sybase:${{ env.GITHUB_REF_NAME }}
           chmod +x ./test/docker_test.sh
           ./test/docker_test.sh
