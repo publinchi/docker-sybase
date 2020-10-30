@@ -36,5 +36,5 @@ jobs:
       - name: Test
         run: |
           docker run -d --name sybase -p 5000:5000 docker.io/fjudith/sybase:${{ env.GITHUB_REF_NAME }}
-          chmod +x test/docker_test.sh
-          test/docker_test.sh
+          chmod +x ./test/docker_test.sh
+          ./test/docker_test.sh
