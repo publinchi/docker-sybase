@@ -16,6 +16,7 @@ script:
   - set -e
   - docker build -f ${BASE}/Dockerfile -t ${REPO}:${VERSION} {BASE}/
   - docker run -d --name localhost -p 5000:5000 ${REPO}:${VERSION}
+  - chmod +x test/docker_image.sh
   - test/docker_image.sh
 after_success: >-
   set -e
