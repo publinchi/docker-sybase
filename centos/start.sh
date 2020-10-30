@@ -3,6 +3,8 @@
 SYBASE_USER=${SYBASE_USER:="tester"}
 SYBASE_PASSWORD=${SYBASE_PASSWORD:="guest1234"}
 SYBASE_DB=${SYBASE_DB:="testdb"}
+SYBASE_DB_SIZE=${SYBASE_DB_SIZE:="50m"}
+SYBASE_MASTER_DB_SIZE${SYBASE_MASTER_DB_SIZE:="100m"}
 
 source ${SYBASE}/SYBASE.sh
 sh ${SYBASE}/SYBASE.sh && sh ${SYBASE}/ASE-16_0/install/RUN_MYSYBASE > /dev/null &
@@ -44,9 +46,9 @@ echo =============== CREATING LOGIN/PWD ==========================
 cat <<-EOSQL > init1.sql
 use master
 go
-disk resize name='master', size='60m'
+disk resize name='master', size='${SYBASE_MASTER_DB_SIZE}'
 go
-create database $SYBASE_DB on master = '48m'
+create database $SYBASE_DB on master = '${SYBASE_DB_SIZE}'
 go
 exec sp_extendsegment logsegment, $SYBASE_DB, master
 go
