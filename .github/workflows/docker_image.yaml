@@ -36,7 +36,10 @@ jobs:
       - name: Test OPS
         run: |
           ls -lha
-          docker run -d --name sybase -p 5000:5000 docker.io/fjudith/sybase:${{ env.GITHUB_REF_NAME }}
+          docker run -d --name sybase \
+          -v "$(pwd)/test/dataset:/var/lib/dataset" \
+          -p 5000:5000 \
+          docker.io/fjudith/sybase:${{ env.GITHUB_REF_NAME }}
           chmod +x ./test/docker_image.sh
           ./test/docker_image.sh
 

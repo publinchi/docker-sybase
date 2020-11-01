@@ -3,7 +3,7 @@ set -e
 
 echo "Wait for Sysbase listen port"
 timeout 30s bash << EOF
-until nc -vz localhost 5000 > /dev/null 2>1
+until nc -vz localhost 5000 > /dev/null 2>&1
 do 
   printf '.' && sleep 1
 done
@@ -12,7 +12,7 @@ echo " "
 
 echo "Wait for Sybase master database"
 timeout 30s bash << EOF
-until docker exec sybase isql -U sa -P myPassword -S MYSYBASE -D master > /dev/null 2>1
+until docker exec sybase isql -U sa -P myPassword -S MYSYBASE -D master > /dev/null 2>&1
 do
   printf '.' && sleep 1
 done
@@ -34,8 +34,14 @@ go
 sp_adduser ciuser, ciuser, null  
 go
 create table ci_test(
-    id    numberic (10,0) primary key
-  , value int             not null    
+  id      numeric (10,0)   identity primary key,
+  value   int             not null    
 )
+go
+insert into ci_test values (${RANDOM})
+insert into ci_test values (${RANDOM})
+insert into ci_test values (${RANDOM})
+insert into ci_test values (${RANDOM})
+insert into ci_test values (${RANDOM})
 go
 EOF
