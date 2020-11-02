@@ -2,8 +2,9 @@
 
 ## 10k identity fra CSV
 
-10 000 French identities generated using [Fake Name Generator](https://fakenamegenerator.com) to test massive data import using [`bcp`](http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.help.sqlanywhere.12.0.1/dbreference/input-statement.html) command tool.
+10 000 French identities generated using [Fake Name Generator](https://fakenamegenerator.com) to test massive data import using [`bcp`](http://infocenter.sybase.com/help/topic/com.sybase.infocenter.dc30191.1600/doc/html/san1367605030412.html) command tool.
 
 ## Troubeshooting
 
+* [Command line tools]((http://infocenter.sybase.com/help/topic/com.sybase.infocenter.dc30191.1600/doc/html/san1367605024803.html))
 * [Latitude & Longitude data types](https://stackoverflow.com/questions/12504208/what-mysql-data-type-should-be-used-for-latitude-longitude-with-8-decimal-places)
