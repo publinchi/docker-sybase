@@ -2,7 +2,7 @@
 
 echo "Create fake names database"
 docker exec -i sybase isql \
--U sa -P myPassword -S MYSYBASE -D master
+-U sa -P myPassword -S MYSYBASE -D master \
 -i /var/lib/dataset/fakenames.sql
 
 echo "Import fake names using bcp"
