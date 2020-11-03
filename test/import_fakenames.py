@@ -9,7 +9,10 @@ driver='FreeTDS'
 parser = argparse.ArgumentParser()
 parser.parse_known_args()
 # Input file related arguments
-parser.add_argument('-f', '--filename', help='that contains the data to import', default=os.environ.get('FK_FILENAME', default="test/dataset/10k_fakenames_fra.csv"))
+parser.add_argument('-f', '--filename', help='that contains the data to import', default=os.environ.get('FK_FILENAME', default=None ))
+parser.add_argument('--comma-csv', help="CSV formatted file format", action="store_true", default=True)
+parser.add_argument('--comma-delimited', help="comma ',' delimited file format", action="store_true")
+parser.add_argument('--pipe-delimited', help="Pipe '|' delimited file format", action="store_true")
 # SQL related arguments
 parser.add_argument('-S', '--server', help='target SQL server', default=os.environ.get('FK_SERVER', default="127.0.0.1"))
 parser.add_argument('-P', '--port', help='listen port port of the SQL service', default=os.environ.get('FK_PORT', default="5000"))
@@ -112,43 +115,66 @@ def create_table(dbconn, tablename):
         dbconn.commit()
         
 
-def import_piped_data(dbconn, tablename, filename):
+def import_pipe_delimited_data(dbconn, tablename, filename):
     logger.info('Load data from file "{0}" to table "{1}"'.format(filename, tablename))
 
+    # Table configuration
     cursor = dbconn.cursor()
+    cursor.execute('SET IDENTITY_INSERT {0} ON'.format(tablename))
+    cursor.commit()
 
-    with open(file=filename, mode='r', newline=None ) as csvfile:
-        csvfile.readline()
-        spamreader = csv.reader(csvfile, delimiter='|', quotechar='"')
+    # Count total number of lines in the input file
+    with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
+        reader = csv.reader(f, delimiter='|', quotechar='"')
+        next(reader)
+        lines = len(list(reader))
         
-        for row in spamreader:
-            cursor.execute("""
-                insert into {0}
-                values ({1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9},
-                        {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19},
-                        {20}, {21}, {22}, {23}, {24}, {25}, {26}, {27}, {28}, {29},
-                        {30}, {31}, {32}, {33}, {34}, {35}, {36}, {37}, {38}, {39},
-                        {40}, {41}, {42}, {43}, {44}
-                       )
-                """.format(tablename,
-                    row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
-                    row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19],
-                    row[20], row[21], row[22], row[23], row[24], row[25], row[26], row[27], row[28], row[29],
-                    row[30], row[31], row[32], row[33], row[34], row[35], row[36], row[37], row[38], row[39],
-                    row[40], row[41], row[42], row[43], row[44]
-                    )
-                )
-            dbconn.commit()
-            # print(row)
+
+    with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
+        reader = csv.reader(f, delimiter='|', quotechar='"')
+        columns = next(reader)
+        query = 'insert into ' + tablename + '({0}) values ({1})'
+        query = query.format(','.join(columns), ','.join('?' * len(columns))).lower()
+        query = query.replace('mothersmaiden','maidenname')
+        query = query.replace('ups','upstracking')
+        
+        logger.info('Processing "{0}" lines'.format(lines))
+        record = 0
+
+        for data in reader:
+            cursor = dbconn.cursor()
+        
+            data[0] = int(data[0])                # number
+            data[8] = data[8].replace('Ÿ','Y')    # city
+            data[15] = data[15].replace('œ','oe') # password
+            data[19] = int(data[19])              # telephonecountrycode
+            data[22] = int(data[22])              # age
+            data[38] = float(data[38])            # pounds
+            data[39] = float(data[39])            # kilograms
+            data[41] = int(data[41])              # centimeters
+            data[43] = float(data[43])            # latitude
+            data[44] = float(data[44])            # longitude
+            cursor.execute(query, data)
+            
+            cursor.commit()
+            record += 1
+
+    logger.info('Imported {0}/{1} line from file "{2}" to table "{3}"'.format(record, lines, filename, tablename))
 
 
-def import_csv_data(dbconn, tablename, filename):
-    logger.info('Load data from file "{0}" to table "{1}"'.format(filename, tablename))
+def import_csv_delimited_data(dbconn, tablename, filename):
+    logger.info('Load CSV data from file "{0}" to table "{1}"'.format(filename, tablename))
     
     # Table configuration
     cursor = dbconn.cursor()
     cursor.execute('SET IDENTITY_INSERT {0} ON'.format(tablename))
     cursor.commit()
+
+    # Count total number of lines in the input file
+    with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
+        reader = csv.reader(f)
+        next(reader)
+        lines = len(list(reader))
 
     with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
         reader = csv.reader(f)
@@ -158,28 +184,45 @@ def import_csv_data(dbconn, tablename, filename):
         query = query.replace('mothersmaiden','maidenname')
         query = query.replace('ups','upstracking')
 
+        logger.info('Processing "{0}" lines'.format(lines))
+        record = 0
+        
         for data in reader:
             cursor = dbconn.cursor()
         
-            data[0] = int(data[0])
-            data[8] = data[8].replace('Ÿ','Y')
-            data[19] = int(data[19])
-            data[22] = int(data[22])
-            data[38] = float(data[38])
-            data[39] = float(data[39])
-            data[41] = int(data[41])
-            data[43] = float(data[43])
-            data[44] = float(data[44])
+            data[0] = int(data[0])                # number
+            data[8] = data[8].replace('Ÿ','Y')    # city
+            data[15] = data[15].replace('œ','oe') # password
+            data[19] = int(data[19])              # telephonecountrycode
+            data[22] = int(data[22])              # age
+            data[38] = float(data[38])            # pounds
+            data[39] = float(data[39])            # kilograms
+            data[41] = int(data[41])              # centimeters
+            data[43] = float(data[43])            # latitude
+            data[44] = float(data[44])            # longitude
             cursor.execute(query, data)
             
             cursor.commit()
+            record += 1
+
+    logger.info('Imported {0}/{1} line from file "{2}" to table "{3}"'.format(record, lines, filename, tablename))
 
 
 def handle(event, context):
     dbconn = connect()
     create_table(dbconn=dbconn, tablename=args.table)
-    # import_piped_data(dbconn=dbconn, tablename=args.table, filename=args.filename)
-    import_csv_data(dbconn=dbconn, tablename=args.table,filename=args.filename)
+    if args.pipe_delimited:
+        import_pipe_delimited_data(
+            dbconn=dbconn,
+            tablename=args.table, 
+            filename=args.filename
+            )
+    else:
+        import_pipe_delimited_data(
+            dbconn=dbconn,
+            tablename=args.table,
+            filename=args.filename
+            )
 
 
 if __name__ == '__main__':
