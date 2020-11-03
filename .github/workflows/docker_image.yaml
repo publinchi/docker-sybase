@@ -51,6 +51,7 @@ jobs:
 
       - name: Test Python
         run: |
+          ls -l
           chmod +x ./test/import_fakenames.sh
           ./test/import_fakenames.sh
 
