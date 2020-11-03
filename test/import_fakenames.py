@@ -154,8 +154,8 @@ def import_pipe_delimited_data(dbconn, tablename, filename):
             data[41] = int(data[41])              # centimeters
             data[43] = float(data[43])            # latitude
             data[44] = float(data[44])            # longitude
-            cursor.execute(query, data)
             
+            cursor.execute(query, data)
             cursor.commit()
             record += 1
 
@@ -198,8 +198,8 @@ def import_csv_delimited_data(dbconn, tablename, filename):
             data['Centimeters'] = int(data['Centimeters'])
             data['Latitude'] = float(data['Latitude'])
             data['Longitude'] = float(data['Longitude'])
-            cursor.execute(query, list(data.values()))
             
+            cursor.execute(query, list(data.values()))
             cursor.commit()
             record += 1
 
