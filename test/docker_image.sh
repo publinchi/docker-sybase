@@ -25,7 +25,7 @@ echo "Create CI test database"
 docker exec -i sybase isql -U sa -P myPassword -S MYSYBASE -D master << EOF
 select name,id from sysobjects
 go
-create database cidb on master = '48m'
+create database cidb on master = '40m'
 go
 create login ciuser with password continuous_integration
 go
