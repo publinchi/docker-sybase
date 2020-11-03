@@ -4,6 +4,7 @@ set -e
 
 # Install required pakages
 sudo apt-get install -yq \
+    build-essential \
     python3-setuptools \
     freetds-bin \
     freetds-dev \
