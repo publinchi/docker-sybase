@@ -153,7 +153,7 @@ def import_csv_data(dbconn, tablename, filename):
     with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
         reader = csv.reader(f)
         columns = next(reader) 
-        query = 'insert into fakenames({0}) values ({1})'
+        query = 'insert into ' + tablename + '({0}) values ({1})'
         query = query.format(','.join(columns), ','.join('?' * len(columns))).lower()
         query = query.replace('mothersmaiden','maidenname')
         query = query.replace('ups','upstracking')

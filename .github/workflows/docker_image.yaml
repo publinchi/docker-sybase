@@ -42,6 +42,8 @@ jobs:
           docker.io/fjudith/sybase:${{ env.GITHUB_REF_NAME }}
           chmod +x ./test/docker_image.sh
           ./test/docker_image.sh
+          sleep 10
+          ./test/docker_image.sh
 
       - name: Setup Python
         uses: actions/setup-python@v2

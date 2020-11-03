@@ -29,6 +29,8 @@ create database cidb on master = '48m'
 go
 create login ciuser with password continuous_integration
 go
+exec sp_dboption cidb, 'ddl in tran', true
+go
 use cidb
 go
 sp_adduser ciuser, ciuser, null  
