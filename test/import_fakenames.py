@@ -1,9 +1,7 @@
 import os
-import io
 import argparse
 import logging
 import pyodbc
-import pandas as pd
 import csv
 
 driver='FreeTDS'
@@ -146,29 +144,35 @@ def import_piped_data(dbconn, tablename, filename):
 
 def import_csv_data(dbconn, tablename, filename):
     logger.info('Load data from file "{0}" to table "{1}"'.format(filename, tablename))
-
-    data = pd.read_csv(filename)
-    df = pd.DataFrame(data) 
     
-    for row in df.itertuples():
-        cursor = dbconn.cursor()
-        cursor.execute("""
-                insert into {0}
-                values ({1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9},
-                        {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19},
-                        {20}, {21}, {22}, {23}, {24}, {25}, {26}, {27}, {28}, {29},
-                        {30}, {31}, {32}, {33}, {34}, {35}, {36}, {37}, {38}, {39},
-                        {40}, {41}, {42}, {43}, {44}, {45}
-                       )
-                """.format(tablename,
-                    row.Number, row.Gender, row.NameSet, row.Title, row.GivenName, row.MiddleInitial, row.Surname, row.StreetAddress, row.BloodType,
-                    row.State, row.StateFull, row.ZipCode, row.Country, row.CountryFull, row.EmailAddress, row.Username, row.Password, row.BrowserUserAgent, row.TelephoneNumber,
-                    row.TelephoneCountryCode, row.MothersMaiden, row.Birthday, row.Age, row.TropicalZodiac, row.CCType, row.CCNumber, row.CVV2, row.CCExpires, row.NationalID, 
-                    row.UPS, row.WesternUnionMTCN, row.MoneyGramMTCN, row.Color, row.Occupation, row.Company, row.Vehicle, row.Domain, row.BloodType, row.Pounds, 
-                    row.Kilograms, row.FeetInches, row.Centimeters, row.GUID, row.Latitude, row.Longitude
-                    )
-                )
-        dbconn.commit()
+    # Table configuration
+    cursor = dbconn.cursor()
+    cursor.execute('SET IDENTITY_INSERT {0} ON'.format(tablename))
+    cursor.commit()
+
+    with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
+        reader = csv.reader(f)
+        columns = next(reader) 
+        query = 'insert into fakenames({0}) values ({1})'
+        query = query.format(','.join(columns), ','.join('?' * len(columns))).lower()
+        query = query.replace('mothersmaiden','maidenname')
+        query = query.replace('ups','upstracking')
+
+        for data in reader:
+            cursor = dbconn.cursor()
+        
+            data[0] = int(data[0])
+            data[8] = data[8].replace('Ÿ','Y')
+            data[19] = int(data[19])
+            data[22] = int(data[22])
+            data[38] = float(data[38])
+            data[39] = float(data[39])
+            data[41] = int(data[41])
+            data[43] = float(data[43])
+            data[44] = float(data[44])
+            cursor.execute(query, data)
+            
+            cursor.commit()
 
 
 def handle(event, context):

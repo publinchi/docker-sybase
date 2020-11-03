@@ -1,12 +1,15 @@
 #!/bin/bash
 
-echo "Create fake names database"
-docker exec -i sybase isql \
--U sa -P myPassword -S MYSYBASE -D master \
--i /var/lib/dataset/fakenames.sql
+# Install required pakages
+sudo apt-get install freetds-bin freetds-dev libct4 libsybdb5 tdsodbc unixodbc unixodbc-dev
+sudo pip3 install pyodbc sqlalchemy pymssql pandas
 
-echo "Import fake names using bcp"
-docker exec -i sybase \
-bcp master.dbo.fakenames in /var/lib/dataset/10k_fakenames_fra.txt \
--U sa -P myPassword -S MYSYBASE \
--c -J utf8 -Y -t '|' -r '\r\n' -m 999999999
+cat << EOF > /etc/odbcinst.ini
+[FreeTDS]
+Description=FreeTDS Driver
+Driver=/usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
+Setup=/usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
+EOF
+
+pip3 install -r ./test/requirements.txt
+python3 ./test/import_fakenames.py

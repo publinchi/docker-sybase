@@ -33,7 +33,7 @@ jobs:
           platforms: linux/amd64
           load: true
       
-      - name: Test OPS
+      - name: Test Shell
         run: |
           ls -lha
           docker run -d --name sybase \
@@ -42,6 +42,12 @@ jobs:
           docker.io/fjudith/sybase:${{ env.GITHUB_REF_NAME }}
           chmod +x ./test/docker_image.sh
           ./test/docker_image.sh
+
+      - name: Test Python
+        uses: actions/setup-python@v2
+        run: |
+          chmod +x ./test/import_fakenames.sh
+          ./test/import_fakenames.sh
 
       - name: Push
         id: docker_push
