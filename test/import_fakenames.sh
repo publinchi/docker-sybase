@@ -22,4 +22,6 @@ Setup=/usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
 EOF
 
 pip3 install -qr ./test/requirements.txt
+ls -l /usr/lib/x86_64-linux-gnu/odbc/
+
 python3 ./test/import_fakenames.py --filename=test/dataset/10k_fakenames_fra.csv
