@@ -218,7 +218,7 @@ def handle(event, context):
             filename=args.filename
             )
     else:
-        import_pipe_delimited_data(
+        import_csv_delimited_data(
             dbconn=dbconn,
             tablename=args.table,
             filename=args.filename
