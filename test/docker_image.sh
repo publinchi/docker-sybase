@@ -1,30 +1,46 @@
 #!/bin/bash
+
 set -e
 
+# Retries a command on failure.
+# $1 - the max number of attempts
+# $2... - the command to run
+retry() {
+    local -r -i max_attempts="$1"; shift
+    local -r cmd="$@"
+    local -i attempt_num=1
+
+    until $cmd
+    do
+        if (( attempt_num == max_attempts ))
+        then
+            echo "Attempt $attempt_num failed and there are no more attempts left!"
+            return 1
+        else
+            echo "Attempt $attempt_num failed! Trying again in $attempt_num seconds..."
+            sleep $(( attempt_num++ ))
+        fi
+    done
+}
+
 echo "Wait for Sysbase listen port"
-timeout 30s bash << EOF
-until nc -vz localhost 5000 > /dev/null 2>&1
-do 
-  printf '.' && sleep 1
-done
-EOF
-echo " "
+retry 30 nc -vz localhost 5000 > /dev/null 2>&1
 
-echo "Wait for Sybase master database"
-timeout 30s bash << EOF
-until docker exec sybase isql -U sa -P myPassword -S MYSYBASE -D master > /dev/null 2>&1
+echo "Wait for Sybase master database creation"
+retry 30 docker exec sybase isql -U sa -P myPassword -S MYSYBASE -D master > /dev/null 2>&1
+
+
+echo "Wait for Sybase master database initailisation"
+STATUS=$(docker exec -i sybase bash -c 'grep "Finished initialization." ${SYBASE}/ASE-16_0/install/MYSYBASE.log | wc -c')
+until [[ ${STATUS} -gt 400 ]]
 do
-  printf '.' && sleep 1
+    STATUS=$(docker exec -i sybase bash -c 'grep "Finished initialization." ${SYBASE}/ASE-16_0/install/MYSYBASE.log | wc -c')
+    printf "." && sleep 5
 done
-EOF
-echo " "
-
-docker container logs sybase
+echo ""
 
 echo "Create CI test database"
-docker exec -i sybase isql -U sa -P myPassword -S MYSYBASE -D master << EOF
-select name,id from sysobjects
-go
+docker exec -i sybase isql -U sa -P myPassword -S MYSYBASE -D master <<-EOSQL
 create database cidb on master = '40m'
 go
 create login ciuser with password continuous_integration
@@ -46,4 +62,4 @@ insert into ci_test values (${RANDOM})
 insert into ci_test values (${RANDOM})
 insert into ci_test values (${RANDOM})
 go
-EOF
+EOSQL
