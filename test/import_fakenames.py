@@ -172,15 +172,13 @@ def import_csv_delimited_data(dbconn, tablename, filename):
 
     # Count total number of lines in the input file
     with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
-        reader = csv.reader(f)
-        next(reader)
+        reader = csv.DictReader(f)
         lines = len(list(reader))
 
     with open (file=filename, mode='r', newline=None, encoding='utf-8-sig') as f:
-        reader = csv.reader(f)
-        columns = next(reader) 
+        reader = csv.DictReader(f)
         query = 'insert into ' + tablename + '({0}) values ({1})'
-        query = query.format(','.join(columns), ','.join('?' * len(columns))).lower()
+        query = query.format(','.join(reader.fieldnames), ','.join('?' * len(reader.fieldnames))).lower()
         query = query.replace('mothersmaiden','maidenname')
         query = query.replace('ups','upstracking')
 
@@ -190,17 +188,17 @@ def import_csv_delimited_data(dbconn, tablename, filename):
         for data in reader:
             cursor = dbconn.cursor()
         
-            data[0] = int(data[0])                # number
-            data[8] = data[8].replace('Ÿ','Y')    # city
-            data[15] = data[15].replace('œ','oe') # password
-            data[19] = int(data[19])              # telephonecountrycode
-            data[22] = int(data[22])              # age
-            data[38] = float(data[38])            # pounds
-            data[39] = float(data[39])            # kilograms
-            data[41] = int(data[41])              # centimeters
-            data[43] = float(data[43])            # latitude
-            data[44] = float(data[44])            # longitude
-            cursor.execute(query, data)
+            data['Number'] = int(data['Number'])
+            data['City'] = data['City'].replace('Ÿ','Y')
+            data['Password'] = data['Password'].replace('œ','oe')
+            data['TelephoneCountryCode'] = int(data['TelephoneCountryCode'])
+            data['Age'] = int(data['Age'])
+            data['Pounds'] = float(data['Pounds'])
+            data['Kilograms'] = float(data['Kilograms'])
+            data['Centimeters'] = int(data['Centimeters'])
+            data['Latitude'] = float(data['Latitude'])
+            data['Longitude'] = float(data['Longitude'])
+            cursor.execute(query, list(data.values()))
             
             cursor.commit()
             record += 1
