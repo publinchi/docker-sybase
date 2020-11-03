@@ -15,7 +15,7 @@ sudo apt-get install -yq \
 
 sudo pip3 install pyodbc sqlalchemy pymssql pandas
 
-cat << EOF > /etc/odbcinst.ini
+cat << EOF > sudo /etc/odbcinst.ini
 [FreeTDS]
 Description=FreeTDS Driver
 Driver=/usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
