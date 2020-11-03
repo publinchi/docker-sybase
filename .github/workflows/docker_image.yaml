@@ -43,8 +43,9 @@ jobs:
           chmod +x ./test/docker_image.sh
           ./test/docker_image.sh
 
-      - name: Test Python
+      - name: Setup Python
         uses: actions/setup-python@v2
+      - name: Test Python
         run: |
           chmod +x ./test/import_fakenames.sh
           ./test/import_fakenames.sh
