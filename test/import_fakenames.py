@@ -158,7 +158,6 @@ def import_pipe_delimited_data(dbconn, tablename, filename):
             
             cursor.commit()
             record += 1
-            print('{}\r'.format(record), end="")
 
     logger.info('Imported {0}/{1} line from file "{2}" to table "{3}"'.format(record, lines, filename, tablename))
 
@@ -205,7 +204,6 @@ def import_csv_delimited_data(dbconn, tablename, filename):
             
             cursor.commit()
             record += 1
-            print('{}\r'.format(record), end="")
 
     logger.info('Imported {0}/{1} line from file "{2}" to table "{3}"'.format(record, lines, filename, tablename))
 
