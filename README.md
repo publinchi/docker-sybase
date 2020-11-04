@@ -4,20 +4,54 @@
 [![](https://images.microbadger.com/badges/image/fjudith/docker-sybase.svg)](http://microbadger.com/images/nguoianphu/docker-sybase "Get your own image badge on microbadger.com")
 ![Docker image](https://github.com/fjudith/docker-sybase/workflows/Docker%20CI/badge.svg)
 
-## SAP ASE Developer Edition
-    
-    https://go.sap.com/cmp/syb/crm-xu15-int-asewindm/typ.html
+## Quick start
 
-    http://d1cuw2q49dpd0p.cloudfront.net/ASE16.0/Linux16SP02/ASE_Suite.linuxamd64.tgz
-    http://d1cuw2q49dpd0p.cloudfront.net/ASE16.0/Windows16SP02/ASE_Suite.winx64.zip
+```bash
+docker container run -it --name sybase --rm -p 5000:5000 fjudith/sybase:16.0
+```
 
-## SAP ASE Express Edition
-    
-    http://d1cuw2q49dpd0p.cloudfront.net/ASE16.0/ExpressEdition/ase160_linuxx86-64.zip
-    http://d1cuw2q49dpd0p.cloudfront.net/ASE16.0/DeveloperEdition/ase160_winx64.zip
+## Default Authentication
 
+Two users are configured at first boot.
 
-## This image use the SAP Sybase ASE Developer Edition 16.0
+Database | Username | Password | Customization
+--- | --- | --- | --- 
+`master` | `sa` | `myPassword` | None (static)
+`testdb` | `test` | `guest1234`| Environment variable
+
+```bash
+docker container exec -i sybase isql -U "sa" -P "myPassword" -S "MYSYBASE" -D "master" <<-EOF
+select id,name from sysobjects
+go
+EOF
+```
+
+## Environment variables
+
+* **SYBASE_MASTER_DB_SIZE**: Size of the master database; _default_ `200m`
+* **SYBASE_USER**: Test user name; _default_ `tester`
+* **SYBASE_PASSWORD**: Test user password; _default_ `guest1234`
+* **SYBASE_DB**: Test database name; _default_ `testdb`
+* **SYBASE_DB_SIZE**: Test database size (Must be less than 80% of the _SYBASE_MASTER_DB_SIZE_, and at least 24m); _default_ `50m`
+
+## Packages
+
+### SAP ASE Developer Edition (default)
+
+```text
+https://go.sap.com/cmp/syb/crm-xu15-int-asewindm/typ.html
+
+http://repository.transtep.com/repository/thirdparty/sybase/ASE16SP02/ASE_Suite.linuxamd64.tgz
+http://repository.transtep.com/repository/thirdparty/sybase/ASE16SP02/ASE_Suite.winx64.zip
+```
+
+### SAP ASE Express Edition
+
+```text 
+http://d1cuw2q49dpd0p.cloudfront.net/ASE16.0/ExpressEdition/ase160_linuxx86-64.zip
+http://d1cuw2q49dpd0p.cloudfront.net/ASE16.0/DeveloperEdition/ase160_winx64.zip
+```
+
 
 ### Build
 
