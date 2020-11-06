@@ -13,7 +13,7 @@ LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com" \
       org.label-schema.version="${ANSIBLE_VERSION}" \
       org.label-schema.vcs-url="https://github.com/fjudith/docker-sybase.git" \
       org.label-schema.vcs-ref="${VCS_REF}" \
-      org.label-schema.docker.dockerfile="docker/alpine/Dockerfile" \
+      org.label-schema.docker.dockerfile="ansible/Dockerfile" \
       org.label-schema.description="Ansible and FreeTDS on alpine OCI image" \
       org.label-schema.schema-version="1.0" 
 
