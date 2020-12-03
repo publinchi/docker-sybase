@@ -4,7 +4,7 @@ FROM docker.io/amd64/python:3-alpine
 ARG BUILD_DATE
 ARG ANSIBLE_VERSION
 ARG ANSIBLE_LINT_VERSION
-ARG TINI_VERSION
+ARG TINI_VERSION=0.19.0
 ARG VCS_REF
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com" \
@@ -52,11 +52,13 @@ RUN apk add --upate --virtual .build-deps \
         build-base && \
     rm -rf /var/cache/apk/*
 
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc /tini.asc
+
+ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini /tini
+ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini.asc /tini.asc
 RUN gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 && \
     gpg --batch --verify /tini.asc /tini && \
     chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
