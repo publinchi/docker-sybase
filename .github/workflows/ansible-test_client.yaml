@@ -37,7 +37,7 @@ jobs:
 
       - name: Set ENV variables
         run: |
-          for v in `cat env`
+          for v in `cat ./ansible-test/.env`
           do 
             echo "::set-env name=${v%%=*}::${v##*=}"
           done

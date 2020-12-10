@@ -49,7 +49,7 @@ jobs:
       
       - name: Set ENV variables
         run: |
-          for v in `cat env`
+          for v in `cat ./sap-ase/.env`
           do 
             echo "::set-env name=${v%%=*}::${v##*=}"
           done
