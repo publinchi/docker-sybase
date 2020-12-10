@@ -12,6 +12,11 @@ on:
     - 'test/**'
     - '.github/workflows/sap-ase_server.yaml'
 
+env:
+  REPOSITORY: "docker.io/sqlops/sybase"
+  DOCKERFILE: "ansible-ase/Dockerfile.ci"
+  ENF_FILE: "./ansible-ase/.env"
+
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -26,26 +31,28 @@ jobs:
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          install: true
       
+      - name: Set ENV variables
+        run: |
+          cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }} 
 
-      - name: Set ENV variables
+      - name: Build image
         run: |
-          cat ./sap-ase/.env >> $GITHUB_ENV
-
-      - name: Build
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          tags: docker.io/sqlops/sybase:${{ env.SEMVER_TAG }}
-          context: ./
-          file: ./sap-ase/Dockerfile.ci
-          platforms: linux/amd64
-          load: true
+          docker image build -f ${{ env.DOCKERFILE }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MAJOR }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MINOR }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_PATCH }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_TAG }} \
+          --tag ${{ env.REPOSITORY}}:latest \
+          ./
 
       - name: Test Shell
         run: |
@@ -70,12 +77,12 @@ jobs:
           chmod +x ./test/import_fakenames.sh
           ./test/import_fakenames.sh
 
-      - name: Push
+      - name: Push image
         id: docker_push
         uses: docker/build-push-action@v2
         with:
-          tags: docker.io/sqlops/sybase:${{ env.SEMVER_TAG }}
+          tags: ${{ env.REPOSITORY}}
           context: ./
-          file: ./sap-ase/Dockerfile.ci
+          file: ${{ env.DOCKERFILE }}
           platforms: linux/amd64
-          push: true
+          push: True

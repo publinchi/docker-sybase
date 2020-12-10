@@ -12,6 +12,11 @@ on:
     - 'test/**'
     - '.github/workflows/sap-ocs_client.yaml'
 
+env:
+  REPOSITORY: "docker.io/sqlops/sybase-ocs"
+  DOCKERFILE: "ansible-ocs/Dockerfile.ci"
+  ENF_FILE: "./ansible-ocs/.env"
+
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -26,23 +31,35 @@ jobs:
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          install: true
       
+      - name: Set ENV variables
+        run: |
+          cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }} 
-      
-      - name: Set ENV variables
-        run: |
-          cat ./sap-ocs/.env >> $GITHUB_ENV
 
-      - name: Build & Push
-        id: docker_build
+      - name: Build image
+        run: |
+          docker image build -f ${{ env.DOCKERFILE }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MAJOR }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MINOR }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_PATCH }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_TAG }} \
+          --tag ${{ env.REPOSITORY}}:latest \
+          ./
+
+      - name: Push image
+        id: docker_push
         uses: docker/build-push-action@v2
         with:
-          tags: docker.io/sqlops/sybase-ocs:${{ env.SEMVER_TAG }}
+          tags: ${{ env.REPOSITORY}}
           context: ./
-          file: ./sap-ocs/Dockerfile.ci
+          file: ${{ env.DOCKERFILE }}
           platforms: linux/amd64
           push: True

@@ -14,6 +14,8 @@ on:
 
 env:
   REPOSITORY: "docker.io/sqlops/ansible-pyodbc"
+  DOCKERFILE: "ansible/Dockerfile"
+  ENF_FILE: "./ansible/.env"
 
 jobs:
   build:
@@ -34,7 +36,7 @@ jobs:
       
       - name: Set ENV variables
         run: |
-          cat ./ansible/.env >> $GITHUB_ENV
+          cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
 
       - name: Login to DockerHub
         uses: docker/login-action@v1 
@@ -44,7 +46,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker image build -f ansible/Dockerfile \
+          docker image build -f ${{ env.DOCKERFILE }} \
           --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MAJOR }} \
           --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MINOR }} \
           --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_PATCH }} \
@@ -52,12 +54,12 @@ jobs:
           --tag ${{ env.REPOSITORY}}:latest \
           ./
 
-      - name: Build & Push
-        id: docker_build
+      - name: Push image
+        id: docker_push
         uses: docker/build-push-action@v2
         with:
-          tags: docker.io/sqlops/ansible-pyodbc
+          tags: ${{ env.REPOSITORY}}
           context: ./
-          file: ./ansible/Dockerfile
+          file: ${{ env.DOCKERFILE }}
           platforms: linux/amd64
           push: True
