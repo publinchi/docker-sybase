@@ -4,13 +4,11 @@ on:
  push:
   paths:
     - 'ansible-test/**'
-    - 'sap-ocs/**'
     - 'test/**'
     - '.github/workflows/ansible_test_client.yaml'
   pull_request:
     paths:
     - 'ansible-test/**'
-    - 'sap-ocs/**'
     - 'test/**'
     - '.github/workflows/ansible-test_client.yaml'
 
