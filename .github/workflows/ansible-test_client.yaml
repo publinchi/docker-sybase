@@ -16,7 +16,7 @@ on:
 
 env:
   REPOSITORY: "docker.io/sqlops/sybase-test-container"
-  DOCKERFILE: "ansible-test/Dockerfile.ci"
+  DOCKERFILE: "./ansible-test/Dockerfile.ci"
   ENV_FILE: "./ansible-test/.env"
 
 jobs:

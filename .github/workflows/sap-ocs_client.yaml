@@ -14,8 +14,8 @@ on:
 
 env:
   REPOSITORY: "docker.io/sqlops/sybase-ocs"
-  DOCKERFILE: "ansible-ocs/Dockerfile.ci"
-  ENV_FILE: "./ansible-ocs/.env"
+  DOCKERFILE: "./sybase-ocs/Dockerfile.ci"
+  ENV_FILE: "./sybase-ocs/.env"
 
 jobs:
   build:
