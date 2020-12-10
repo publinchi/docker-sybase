@@ -1,6 +1,16 @@
 name: SAP OpenClient
 
-on: [push]
+on:
+ push:
+  paths:
+    - 'sap-ocs/**'
+    - 'test/**'
+    - '.github/workflows/sap-ocs_client.yaml'
+  pull_request:
+    paths:
+    - 'sap-ocs/**'
+    - 'test/**'
+    - '.github/workflows/sap-ocs_client.yaml'
 
 jobs:
   build:

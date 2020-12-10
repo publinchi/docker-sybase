@@ -1,6 +1,16 @@
 name: Ansible-Test / SAP OpenClient
 
-on: [push]
+on:
+ push:
+  paths:
+    - 'ansible-test/**'
+    - 'test/**'
+    - '.github/workflows/ansible_test_client.yaml'
+  pull_request:
+    paths:
+    - 'ansible-test/**'
+    - 'test/**'
+    - '.github/workflows/ansible-test_client.yaml'
 
 jobs:
   build:

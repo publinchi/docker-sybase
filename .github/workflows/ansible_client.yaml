@@ -1,6 +1,16 @@
 name: Ansible / PyODBC client
 
-on: [push]
+on:
+ push:
+  paths:
+    - 'ansible/**'
+    - 'test/**'
+    - '.github/workflows/ansible_client.yaml'
+  pull_request:
+    paths:
+    - 'ansible/**'
+    - 'test/**'
+    - '.github/workflows/ansible_client.yaml'
 
 jobs:
   build:
@@ -28,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: docker.io/sqlops/sybase:${{ env.GITHUB_REF_NAME }}-ansible
-          context: ./ansible/
+          context: ./
           file: ./ansible/Dockerfile
           platforms: linux/amd64
           push: True

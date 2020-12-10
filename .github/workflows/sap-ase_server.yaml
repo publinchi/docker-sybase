@@ -1,6 +1,16 @@
 name: Sybase Server
 
-on: [push]
+on:
+ push:
+  paths:
+    - 'sap-ase/**'
+    - 'test/**'
+    - '.github/workflows/sap-ase_server.yaml'
+  pull_request:
+    paths:
+    - 'sap-ase/**'
+    - 'test/**'
+    - '.github/workflows/sap-ase_server.yaml'
 
 jobs:
   build:
