@@ -3,7 +3,7 @@
 [![SAP ASE](https://github.com/fjudith/docker-sybase/workflows/SAP%20Adaptive%20Server%20Enterprise/badge.svg)](https://github.com/fjudith/docker-sybase/actions)
 [![SAP OCS](https://github.com/fjudith/docker-sybase/workflows/SAP%20OpenClient/badge.svg)](https://github.com/fjudith/docker-sybase/actions)
 [![Ansible-test OpenClient Image](https://github.com/fjudith/docker-sybase/workflows/Ansible-Test%20with%20SAP%20OpenClient/badge.svg)](https://github.com/fjudith/docker-sybase/actions)
-[![Ansible PyODBC Image](https://github.com/fjudith/docker-sybase/workflows/Ansible%20with%20PyODBC/badge.svg)](https://github.com/fjudith/docker-sybase/actions)
+[![Ansible PyODBC Image](https://github.com/fjudith/docker-sybase/workflows/Ansible%20PyODBC/badge.svg)](https://github.com/fjudith/docker-sybase/actions)
 [![](https://images.microbadger.com/badges/image/fjudith/docker-sybase.svg)](http://microbadger.com/images/fjudith/docker-sybase "Get your own image badge on microbadger.com")
 ![Docker image](https://github.com/fjudith/docker-sybase/workflows/Docker%20CI/badge.svg)
 
