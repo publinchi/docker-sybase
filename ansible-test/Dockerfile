@@ -9,7 +9,7 @@ LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com" \
       org.label-schema.description="SAP OpenClient on Ansible-Test OCI image" \
       org.label-schema.schema-version="1.0" 
 
-ENV SYBASE = "/opt/sybase"
+ENV SYBASE="/opt/sybase"
 
 RUN yum install -y \
     compat-libstdc++-33-3.2.3-72.el7.x86_64 \
@@ -51,6 +51,6 @@ RUN set -x  && \
     rm -rf /tmp/ASE_Suite /tmp/sybase-response.txt
 
 # Configure Entrypoint to source Sybase variables
-COPY sap-ocs/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
+COPY sap-ocs/scripts/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT [ "/docker-entrypoint.sh" ]

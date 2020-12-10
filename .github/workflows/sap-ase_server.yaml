@@ -37,12 +37,23 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          tags: docker.io/sqlops/sybase:${{ env.GITHUB_REF_NAME }}
+          tags:
+            - docker.io/sqlops/sybase:${{ env.SEMVER_MAJOR }}
+            - docker.io/sqlops/sybase:${{ env.SEMVER_MINOR }}
+            - docker.io/sqlops/sybase:${{ env.SEMVER_PATCH }}
+            - docker.io/sqlops/sybase:${{ env.SEMVER_TAG }}
           context: ./
           file: ./sap-ase/Dockerfile.ci
           platforms: linux/amd64
           load: true
       
+      - name: Set ENV variables
+        run: |
+          for v in `cat env`
+          do 
+            echo "::set-env name=${v%%=*}::${v##*=}"
+          done
+
       - name: Test Shell
         run: |
           ls -lha
@@ -70,7 +81,11 @@ jobs:
         id: docker_push
         uses: docker/build-push-action@v2
         with:
-          tags: docker.io/sqlops/sybase:${{ env.GITHUB_REF_NAME }}
+          tags:
+            - docker.io/sqlops/sybase:${{ env.SEMVER_MAJOR }}
+            - docker.io/sqlops/sybase:${{ env.SEMVER_MINOR }}
+            - docker.io/sqlops/sybase:${{ env.SEMVER_PATCH }}
+            - docker.io/sqlops/sybase:${{ env.SEMVER_TAG }}
           context: ./
           file: ./sap-ase/Dockerfile.ci
           platforms: linux/amd64

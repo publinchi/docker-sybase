@@ -4,11 +4,13 @@ on:
  push:
   paths:
     - 'ansible-test/**'
+    - 'sap-ocs/**'
     - 'test/**'
     - '.github/workflows/ansible_test_client.yaml'
   pull_request:
     paths:
     - 'ansible-test/**'
+    - 'sap-ocs/**'
     - 'test/**'
     - '.github/workflows/ansible-test_client.yaml'
 
@@ -31,13 +33,24 @@ jobs:
         uses: docker/login-action@v1 
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }} 
-      
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Set ENV variables
+        run: |
+          for v in `cat env`
+          do 
+            echo "::set-env name=${v%%=*}::${v##*=}"
+          done
+
       - name: Build & Push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          tags: docker.io/sqlops/sybase-test-container:${{ env.GITHUB_REF_NAME }}
+          tags:
+            - docker.io/sqlops/sybase-test-container:${{ env.SEMVER_MAJOR }}
+            - docker.io/sqlops/sybase-test-container:${{ env.SEMVER_MINOR }}
+            - docker.io/sqlops/sybase-test-container:${{ env.SEMVER_PATCH }}
+            - docker.io/sqlops/sybase-test-container:${{ env.SEMVER_TAG }}
           context: ./
           file: ./ansible-test/Dockerfile.ci
           platforms: linux/amd64

@@ -1,1 +1,2 @@
-docker image build -f ansible-test/Dockerfile -t sqlops/sybase-test-container:1.26.0-centos7 ./
+source ansible-test/.env
+docker image build -f ansible-test/Dockerfile -t sqlops/sybase-test-container:${SEMVER_TAG} ./

@@ -32,12 +32,23 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }} 
-      
+
+      - name: Set ENV variables
+        run: |
+          for v in `cat env`
+          do 
+            echo "::set-env name=${v%%=*}::${v##*=}"
+          done
+
       - name: Build & Push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          tags: docker.io/sqlops/ansible-pyodbc:${{ env.GITHUB_REF_NAME }}
+          tags:
+            - docker.io/sqlops/ansible-pyodbc:${{ env.SEMVER_MAJOR }}
+            - docker.io/sqlops/ansible-pyodbc:${{ env.SEMVER_MINOR }}
+            - docker.io/sqlops/ansible-pyodbc:${{ env.SEMVER_PACTH }}
+            - docker.io/sqlops/ansible-pyodbc:${{ env.SEMVER_TAG }}
           context: ./
           file: ./ansible/Dockerfile
           platforms: linux/amd64
