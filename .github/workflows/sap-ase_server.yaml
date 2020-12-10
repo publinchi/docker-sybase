@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: docker.io/sqlops/sybase:${{ env.GITHUB_REF_NAME }}
-          context: .
+          context: ./
           file: ./sap-ase/Dockerfile.ci
           platforms: linux/amd64
           load: true
@@ -61,7 +61,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: docker.io/fjudith/sybase:${{ env.GITHUB_REF_NAME }}
-          context: ./centos/
-          file: ./centos/Dockerfile
+          context: ./
+          file: ./sap-ase/Dockerfile.ci
           platforms: linux/amd64
           push: true

@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: docker.io/sqlops/sybase-test-container:${{ env.GITHUB_REF_NAME }}
-          context: ./ansible-test/
-          file: ./ansible-test/Dockerfile
+          context: ./
+          file: ./ansible-test/Dockerfile.ci
           platforms: linux/amd64
           push: True
