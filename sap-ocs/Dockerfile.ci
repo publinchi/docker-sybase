@@ -1,4 +1,4 @@
-FROM quay.io/ansible/centos7-test-container:1.26.0
+FROM docker.io/amd64/centos:7
 
 LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com" \
       org.label-schema.url="https://github.com/fjudith/docker-sybase/blob/master/README.md" \
