@@ -45,10 +45,7 @@ jobs:
       
       - name: Set ENV variables
         run: |
-          for v in `cat ./sap-ase/.env`
-          do 
-            echo "::set-env name=${v%%=*}::${v##*=}"
-          done
+          cat ./sap-ase/.env >> $GITHUB_ENV
 
       - name: Test Shell
         run: |
@@ -56,7 +53,7 @@ jobs:
           docker run -d --name sybase \
           -v "$(pwd)/test/dataset:/var/lib/dataset" \
           -p 5000:5000 \
-          docker.io/sqlops/sybase:${{ env.GITHUB_REF_NAME }}
+          docker.io/sqlops/sybase:${{ env.SEMVER_TAG }}
           chmod +x ./test/docker_image.sh
           ./test/docker_image.sh
           sleep 10
