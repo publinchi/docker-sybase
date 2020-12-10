@@ -71,7 +71,7 @@ RUN gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 595
 COPY ansible/files/odbcinst.ini /etc/odbcinst.ini
 
 COPY ansible/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT [ "/tini", "--", "/usr/local/bin/docker-entrypoint.sh" ]
 
 WORKDIR /home/${USER}
