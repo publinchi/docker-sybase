@@ -1,0 +1,1 @@
+docker image build -f ansible-test/Dockerfile -t sqlops/sybase-test-container:1.26.0-centos7 ./
