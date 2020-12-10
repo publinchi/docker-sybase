@@ -32,7 +32,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }} 
-      
+
+      - name: Set ENV variables
+        run: |
+          cat ./sap-ase/.env >> $GITHUB_ENV
+
       - name: Build
         id: docker_build
         uses: docker/build-push-action@v2
@@ -42,10 +46,6 @@ jobs:
           file: ./sap-ase/Dockerfile.ci
           platforms: linux/amd64
           load: true
-      
-      - name: Set ENV variables
-        run: |
-          cat ./sap-ase/.env >> $GITHUB_ENV
 
       - name: Test Shell
         run: |
