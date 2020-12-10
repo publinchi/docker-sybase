@@ -13,9 +13,9 @@ on:
     - '.github/workflows/sap-ase_server.yaml'
 
 env:
-  REPOSITORY: "docker.io/sqlops/sybase"
-  DOCKERFILE: "./sybase/Dockerfile.ci"
-  ENV_FILE: "./sybase/.env"
+  IMAGE: "docker.io/sqlops/sybase"
+  DOCKERFILE: "./sap-ase/Dockerfile.ci"
+  ENV_FILE: "./sap-ase/.env"
 
 jobs:
   build:
@@ -47,11 +47,11 @@ jobs:
       - name: Build image
         run: |
           docker image build -f ${{ env.DOCKERFILE }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MAJOR }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MINOR }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_PATCH }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_TAG }} \
-          --tag ${{ env.REPOSITORY}}:latest \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_MAJOR }} \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_MINOR }} \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_PATCH }} \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_TAG }} \
+          --tag ${{ env.IMAGE:}}:latest \
           ./
 
       - name: Test Shell
@@ -77,12 +77,10 @@ jobs:
           chmod +x ./test/import_fakenames.sh
           ./test/import_fakenames.sh
 
-      - name: Push image
-        id: docker_push
-        uses: docker/build-push-action@v2
-        with:
-          tags: ${{ env.REPOSITORY}}
-          context: ./
-          file: ${{ env.DOCKERFILE }}
-          platforms: linux/amd64
-          push: True
+      - name: Push images
+        run: |
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_MAJOR }} && \
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_MINOR }} && \
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_PATCH }} && \
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_TAG }} && \
+          docker image push ${{ env.IMAGE:}}:latest

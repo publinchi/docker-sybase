@@ -13,7 +13,7 @@ on:
     - '.github/workflows/ansible_client.yaml'
 
 env:
-  REPOSITORY: "docker.io/sqlops/ansible-pyodbc"
+  IMAGE: "docker.io/sqlops/ansible-pyodbc"
   DOCKERFILE: "./ansible/Dockerfile"
   ENV_FILE: "./ansible/.env"
 
@@ -47,19 +47,17 @@ jobs:
       - name: Build image
         run: |
           docker image build -f ${{ env.DOCKERFILE }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MAJOR }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MINOR }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_PATCH }} \
-          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_TAG }} \
-          --tag ${{ env.REPOSITORY}}:latest \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_MAJOR }} \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_MINOR }} \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_PATCH }} \
+          --tag ${{ env.IMAGE:}}:${{ env.SEMVER_TAG }} \
+          --tag ${{ env.IMAGE:}}:latest \
           ./
 
-      - name: Push image
-        id: docker_push
-        uses: docker/build-push-action@v2
-        with:
-          tags: ${{ env.REPOSITORY}}
-          context: ./
-          file: ${{ env.DOCKERFILE }}
-          platforms: linux/amd64
-          push: True
+      - name: Push images
+        run: |
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_MAJOR }} && \
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_MINOR }} && \
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_PATCH }} && \
+          docker image push ${{ env.IMAGE:}}:${{ env.SEMVER_TAG }} && \
+          docker image push ${{ env.IMAGE:}}:latest
