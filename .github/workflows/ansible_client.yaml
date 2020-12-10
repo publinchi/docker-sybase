@@ -15,7 +15,7 @@ on:
 env:
   REPOSITORY: "docker.io/sqlops/ansible-pyodbc"
   DOCKERFILE: "ansible/Dockerfile"
-  ENF_FILE: "./ansible/.env"
+  ENV_FILE: "./ansible/.env"
 
 jobs:
   build:
