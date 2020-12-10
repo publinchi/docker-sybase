@@ -35,10 +35,7 @@ jobs:
       
       - name: Set ENV variables
         run: |
-          for v in `cat ./sap-ocs/.env`
-          do 
-            echo "::set-env name=${v%%=*}::${v##*=}"
-          done
+          cat ./sap-ocs/.env >> $GITHUB_ENV
 
       - name: Build & Push
         id: docker_build

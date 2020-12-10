@@ -37,10 +37,7 @@ jobs:
 
       - name: Set ENV variables
         run: |
-          for v in `cat ./ansible-test/.env`
-          do 
-            echo "::set-env name=${v%%=*}::${v##*=}"
-          done
+          cat ./ansible-test/.env >> $GITHUB_ENV
 
       - name: Build & Push
         id: docker_build
