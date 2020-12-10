@@ -45,11 +45,11 @@ jobs:
       - name: Build image
         run: |
           docker image build -f ansible/Dockerfile \
-          --tags ${{ env.REPOSITORY}}:${{ env.SEMVER_MAJOR }} \
-          --tags ${{ env.REPOSITORY}}:${{ env.SEMVER_MINOR }} \
-          --tags ${{ env.REPOSITORY}}:${{ env.SEMVER_PATCH }} \
-          --tags ${{ env.REPOSITORY}}:${{ env.SEMVER_TAG }} \
-          --tags ${{ env.REPOSITORY}}:latest \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MAJOR }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_MINOR }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_PATCH }} \
+          --tag ${{ env.REPOSITORY}}:${{ env.SEMVER_TAG }} \
+          --tag ${{ env.REPOSITORY}}:latest \
           ./
 
       - name: Build & Push
