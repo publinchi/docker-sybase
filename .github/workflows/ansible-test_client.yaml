@@ -1,4 +1,4 @@
-name: Ansible-Test / SAP OpenClient
+name: Ansible-Test with SAP OpenClient
 
 on:
  push:

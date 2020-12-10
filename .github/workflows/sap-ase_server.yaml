@@ -1,4 +1,4 @@
-name: Sybase Server
+name: SAP Adapative Server Enterprise
 
 on:
  push:

@@ -1,4 +1,4 @@
-name: Ansible / PyODBC client
+name: Ansible PyODBC
 
 on:
  push:
