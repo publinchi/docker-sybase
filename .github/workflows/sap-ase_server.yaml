@@ -78,7 +78,7 @@ jobs:
           ./test/import_fakenames.sh
 
       - name: Push image
-        id: docker_build
+        id: docker_push
         uses: docker/build-push-action@v2
         with:
           tags: ${{ env.IMAGE }}:${{ env.SEMVER_MAJOR }},${{ env.IMAGE }}:${{ env.SEMVER_MINOR }},${{ env.IMAGE }}:${{ env.SEMVER_PATCH }},${{ env.IMAGE }}:${{ env.SEMVER_TAG }},${{ env.IMAGE }}:latest
