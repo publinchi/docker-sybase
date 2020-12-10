@@ -51,6 +51,6 @@ RUN set -x  && \
     rm -rf /tmp/ASE_Suite /tmp/sybase-response.txt
 
 # Configure Entrypoint to source Sybase variables
-COPY sap-OCS/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY sap-ocs/scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
