@@ -47,17 +47,17 @@ jobs:
       - name: Build image
         run: |
           docker image build -f ${{ env.DOCKERFILE }} \
-          --tag ${{ env.IMAGE}}:${{ env.SEMVER_MAJOR }} \
-          --tag ${{ env.IMAGE}}:${{ env.SEMVER_MINOR }} \
-          --tag ${{ env.IMAGE}}:${{ env.SEMVER_PATCH }} \
-          --tag ${{ env.IMAGE}}:${{ env.SEMVER_TAG }} \
-          --tag ${{ env.IMAGE}}:latest \
+          --tag ${{ env.IMAGE }}:${{ env.SEMVER_MAJOR }} \
+          --tag ${{ env.IMAGE }}:${{ env.SEMVER_MINOR }} \
+          --tag ${{ env.IMAGE }}:${{ env.SEMVER_PATCH }} \
+          --tag ${{ env.IMAGE }}:${{ env.SEMVER_TAG }} \
+          --tag ${{ env.IMAGE }}:latest \
           ./
 
       - name: Push images
         run: |
-          docker image push ${{ env.IMAGE}}:${{ env.SEMVER_MAJOR }} && \
-          docker image push ${{ env.IMAGE}}:${{ env.SEMVER_MINOR }} && \
-          docker image push ${{ env.IMAGE}}:${{ env.SEMVER_PATCH }} && \
-          docker image push ${{ env.IMAGE}}:${{ env.SEMVER_TAG }} && \
-          docker image push ${{ env.IMAGE}}:latest
+          docker image push ${{ env.IMAGE }}:${{ env.SEMVER_MAJOR }} && \
+          docker image push ${{ env.IMAGE }}:${{ env.SEMVER_MINOR }} && \
+          docker image push ${{ env.IMAGE }}:${{ env.SEMVER_PATCH }} && \
+          docker image push ${{ env.IMAGE }}:${{ env.SEMVER_TAG }} && \
+          docker image push ${{ env.IMAGE }}:latest
