@@ -9,6 +9,34 @@ LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com" \
       org.label-schema.description="SAP OpenClient on Ansible-Test OCI image" \
       org.label-schema.schema-version="1.0" 
 
+# Python 2.7, 3.5, 3.6, 3.7, 3.8, 3.9
+COPY ansible-test/scripts/install_python_releases.sh /tmp/
+RUN yum -y update && \
+    yum -y groupinstall "Development Tools" && \
+    yum -y install \
+    unixODBC \
+    unixODBC-devel \
+    freetds \
+    freetds-devel \
+    python \
+    python-devel \
+    python-pip \
+    python-setuptools \
+    libselinux-python \
+    python3 \
+    python3-devel \
+    python3-pip \
+    python3-setuptools \
+    libselinux-python3 \
+    && \
+    yum clean all && \
+    rm -rf /usr/share/fonts/* \
+        /usr/share/i18n/* \
+        /usr/share/sgml/docbook/xsl-stylesheets* \
+        /usr/share/adobe/resources/* && \
+    chmod +x /tmp/install_python_releases.sh && \
+    /tmp/install_python_releases.sh
+
 ENV SYBASE="/opt/sybase"
 
 RUN yum install -y \
