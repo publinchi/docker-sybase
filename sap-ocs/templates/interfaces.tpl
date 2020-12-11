@@ -1,8 +1,6 @@
-${SERVER_NAME}
-	master tcp ether ${SERVER_HOST} ${SERVER_PORT}
+__SERVER_NAME___
+	master tcp ether __SERVER_HOST__ __SERVER_PORT__
 
 
-${SERVER_NAME}_BS
-	master tcp ether ${SERVER_HOST} ${SERVER_BACKUP_PORT}
-
-
+__SERVER_NAME__BS
+	master tcp ether __SERVER_HOST__ __SERVER_BACKUP_PORT__
