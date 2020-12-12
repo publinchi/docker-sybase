@@ -91,3 +91,4 @@ RUN /tmp/requirements.sh 3.8
 RUN /tmp/requirements.sh 3.9
 RUN /tmp/requirements.sh 3.6
 
+CMD ["/sbin/init", "--log-target=journal"]
