@@ -9,34 +9,6 @@ LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com" \
       org.label-schema.description="SAP OpenClient on Ansible-Test OCI image" \
       org.label-schema.schema-version="1.0" 
 
-# Python 2.7, 3.5, 3.6, 3.7, 3.8, 3.9
-COPY ansible-test/scripts/install_python_releases.sh /tmp/
-RUN yum -y update && \
-    yum -y groupinstall "Development Tools" && \
-    yum -y install \
-    unixODBC \
-    unixODBC-devel \
-    freetds \
-    freetds-devel \
-    python \
-    python-devel \
-    python-pip \
-    python-setuptools \
-    libselinux-python \
-    python3 \
-    python3-devel \
-    python3-pip \
-    python3-setuptools \
-    libselinux-python3 \
-    && \
-    yum clean all && \
-    rm -rf /usr/share/fonts/* \
-        /usr/share/i18n/* \
-        /usr/share/sgml/docbook/xsl-stylesheets* \
-        /usr/share/adobe/resources/* && \
-    chmod +x /tmp/install_python_releases.sh && \
-    /tmp/install_python_releases.sh
-
 ENV SYBASE="/opt/sybase"
 
 RUN yum install -y \
@@ -82,3 +54,40 @@ RUN set -x  && \
 COPY sap-ocs/scripts/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
+# Python 2.7, 3.5, 3.6, 3.7, 3.8, 3.9
+COPY ansible-test/scripts/install_python_releases.sh /tmp/
+RUN yum -y update && \
+    yum -y groupinstall "Development Tools" && \
+    yum -y install \
+    libselinux-python \
+    libselinux-python3 \
+    && \
+    yum clean all && \
+    rm -rf /usr/share/fonts/* \
+        /usr/share/i18n/* \
+        /usr/share/sgml/docbook/xsl-stylesheets* \
+        /usr/share/adobe/resources/* && \
+    chmod +x /tmp/install_python_releases.sh && \
+    /tmp/install_python_releases.sh
+
+WORKDIR /tmp
+RUN curl -L https://github.com/ansible/default-test-container/archive/2.9.0.tar.gz | tar xvzf - && \
+    cp default-test-container-2.9.0/files/requirements.sh /tmp/requirements.sh && \
+    cp default-test-container-2.9.0/files/early-requirements.txt /tmp/ && \
+    cp -r default-test-container-2.9.0/requirements /tmp/requirements && \
+    cp -r default-test-container-2.9.0/freeze /tmp/freeze && \
+    rm -rf default-test-container-2.9.0
+WORKDIR /
+
+ADD https://bootstrap.pypa.io/2.6/get-pip.py /tmp/get-pip2.6.py
+ADD https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py
+
+RUN /tmp/requirements.sh 2.6
+RUN /tmp/requirements.sh 2.7
+RUN /tmp/requirements.sh 3.5
+RUN /tmp/requirements.sh 3.7
+RUN /tmp/requirements.sh 3.8
+RUN /tmp/requirements.sh 3.9
+RUN /tmp/requirements.sh 3.6
+
