@@ -1,5 +1,5 @@
 #!/bin/sh
-
+SYBASE=${SYBASE:-"/opt/sybase"}
 SERVER_NAME=${SERVER_NAME:='MYSYBASE'}
 SERVER_HOST=${SERVER_HOST:='sybase'}
 SERVER_PORT=${SERVER_PORT:='5000'}
