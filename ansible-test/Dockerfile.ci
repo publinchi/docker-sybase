@@ -16,21 +16,21 @@ LABEL maintainer="Florian JUDITH <florian.judith.b@gmail.com" \
 ENV SYBASE="/opt/sybase"
 
 RUN yum install -y \
-    compat-libstdc++-33-3.2.3-72.el7.x86_64 \
-    libaio \
-    glibc \
-    compat-glibc-2.5-46.2.x86_64 \
-    glibc.i686 \
-    libXtst-devel \
-    libXi-devel \
-    openmotif-devel \
-    libXmu-devel \
-    libXt-devel \
-    libXext-devel \
-    libXp-devel \
-    libX11-devel \
-    libSM-devel \
-    libICE-devel \
+    'compat-libstdc++-33-3.2.3-72.el7.x86_64' \
+    'libaio' \
+    'glibc' \
+    'compat-glibc-2.5-46.2.x86_64' \
+    'glibc.i686' \
+    'libXtst-devel' \
+    'libXi-devel' \
+    'openmotif-devel' \
+    'libXmu-devel' \
+    'libXt-devel' \
+    'libXext-devel' \
+    'libXp-devel' \
+    'libX11-devel' \
+    'libSM-devel' \
+    'libICE-devel' \
     && \
     yum clean all && \
     rm -rf /usr/share/fonts/* \
@@ -64,7 +64,6 @@ ENTRYPOINT [ "/docker-entrypoint.sh" ]
 # ===============================================
 ENV GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568"
 ENV PYTHON26='2.6.9' \
-    PYTHON27='2.7.18' \
     PYTHON35='3.5.9' \
     PYTHON36='3.6.9' \
     PYTHON37='3.7.9' \
@@ -75,19 +74,21 @@ RUN export PATH=${PATH}:/usr/local/bin | tee -a /etc/environment && \
     yum -y update && \
     yum -y groupinstall "Development Tools" && \
     yum -y install \
-        "bluez-libs" \
-        "glibc-devel" \
-        "openssl-devel" \
-        "bzip2-devel" \
-        "libffi-devel" \
-        "libxslt-devel" \
-        "libxml-devel" \
-        "libxml2-devel" \
-        "libyaml-devel" \
-        "libsqlite3x-devel" \
-        "libselinux-python" \
-        "libselinux-python3" \
-        "wget" \
+        'epel-release' \
+        'dnf' \
+        'bluez-libs' \
+        'glibc-devel' \
+        'openssl-devel' \
+        'bzip2-devel' \
+        'libffi-devel' \
+        'libxslt-devel' \
+        'libxml-devel' \
+        'libxml2-devel' \
+        'libyaml-devel' \
+        'libsqlite3x-devel' \
+        'libselinux-python' \
+        'libselinux-python3' \
+        'wget' \
     && \
     yum clean all && \
     rm -rf \
@@ -97,7 +98,7 @@ RUN export PATH=${PATH}:/usr/local/bin | tee -a /etc/environment && \
         /usr/share/adobe/resources/*
 
 RUN set -e && \
-    for i in ${PYTHON26} ${PYTHON27} ${PYTHON35} ${PYTHON36} ${PYTHON37} ${PYTHON38} ${PYTHON39}; do \
+    for i in ${PYTHON26} ${PYTHON35} ${PYTHON36} ${PYTHON37} ${PYTHON38} ${PYTHON39}; do \
         wget "https://www.python.org/ftp/python/${i}/Python-${i}.tgz"  && \
         tar xvf Python-${i}.tgz && \
         cd Python-${i} && \
@@ -132,18 +133,20 @@ ADD https://bootstrap.pypa.io/2.6/get-pip.py /tmp/get-pip2.6.py
 ADD https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py
 
 RUN /tmp/requirements.sh 2.6
-RUN /tmp/requirements.sh 2.7
 RUN /tmp/requirements.sh 3.5
 RUN /tmp/requirements.sh 3.7
 RUN /tmp/requirements.sh 3.8
 RUN /tmp/requirements.sh 3.9
 RUN /tmp/requirements.sh 3.6
 
-RUN ln -sf "/usr/local/bin/pip2.7" "/usr/local/bin/pip" && \
-    ln -sf "/usr/local/bin/pip2.7" "/usr/bin/pip" && \
+ENV PIP_VERSION='20.3.1'
+RUN python /tmp/get-pip.py && \
+    for i in ${PYTHON35} ${PYTHON36} ${PYTHON37} ${PYTHON38} ${PYTHON39}; do \
+        python${i:0:3} /tmp/get-pip.py; \
+    done \
+    && \
     ln -sf "/usr/local/bin/pip3.6" "/usr/local/bin/pip3" && \
     ln -sf "/usr/local/bin/pip3.6" "/usr/bin/pip3" && \
-    ln -sf "/usr/local/bin/python2.7" "/usr/local/bin/python" && \
-    ln -sf "/usr/local/bin/python2.7" "/usr/bin/python" && \
-    ln -sf "/usr/local/bin/pyton3.6" "/usr/local/bin/python3" && \
-    ln -sf "/usr/local/bin/pyton3.6" "/usr/bin/python3"
+    ln -sf "/usr/local/bin/python3.6" "/usr/local/bin/python3" && \
+    ln -sf "/usr/local/bin/python3.6" "/usr/bin/python3" && \
+    rm -f /usr/local/bin/pip
