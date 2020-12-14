@@ -76,6 +76,7 @@ RUN export PATH=${PATH}:/usr/local/bin | tee -a /etc/environment && \
     yum -y install \
         'epel-release' \
         'dnf' \
+        'python-dnf' \
         'bluez-libs' \
         'glibc-devel' \
         'openssl-devel' \
