@@ -76,7 +76,6 @@ RUN export PATH=${PATH}:/usr/local/bin | tee -a /etc/environment && \
     yum -y install \
         'epel-release' \
         'dnf' \
-        'python-dnf' \
         'bluez-libs' \
         'glibc-devel' \
         'openssl-devel' \
@@ -150,4 +149,4 @@ RUN python /tmp/get-pip.py && \
     ln -sf "/usr/local/bin/pip3.6" "/usr/bin/pip3" && \
     ln -sf "/usr/local/bin/python3.6" "/usr/local/bin/python3" && \
     ln -sf "/usr/local/bin/python3.6" "/usr/bin/python3" && \
-    rm -f /usr/local/bin/pip
+    rm -f /usr/local/bin/pip /usr/local/bin/pip2
