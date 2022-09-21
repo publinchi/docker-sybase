@@ -38,14 +38,14 @@ RUN yum install -y \
         /usr/share/adobe/resources/*
 
 # Setting kernel.shmmax and
-COPY sap-ase/files/sysctl.conf /etc/
+COPY files/sysctl.conf /etc/
 RUN set -x && \
     true || /sbin/sysctl -p
 
 
 # Install Sybase | Build ASE Server
-COPY sap-ase/files/sybase-response.txt /tmp/
-COPY sap-ase/packages/ASE_Suite.linuxamd64.tgz ./
+COPY files/sybase-response.txt /tmp/
+COPY packages/ASE_Suite.linuxamd64.tgz ./
 RUN set -x  && \
     mkdir -p /tmp/ && \
     tar xfz ASE_Suite.linuxamd64.tgz -C /tmp/  && \
@@ -68,14 +68,14 @@ RUN set -x  && \
 #     rm -rf /tmp/ASE_Suite /tmp/sybase-response.txt
 
 # Build ASE server
-COPY sap-ase/files/sybase-ase.rs /tmp/
+COPY files/sybase-ase.rs /tmp/
 RUN source ${SYBASE}/SYBASE.sh && \
     mv /tmp/sybase-ase.rs ${SYBASE}/ASE-16_0/sybase-ase.rs && \
     ${SYBASE}/ASE-16_0/bin/srvbuildres -r ${SYBASE}/ASE-16_0/sybase-ase.rs
 
 # Change the Sybase interface
 # Set the Sybase startup script in entrypoint.sh
-COPY sap-ase/files/interfaces /tmp/
+COPY files/interfaces /tmp/
 RUN mv ${SYBASE}/interfaces ${SYBASE}/interfaces.backup && \
     mv /tmp/interfaces ${SYBASE}/
  
@@ -87,6 +87,6 @@ EXPOSE 5000
 # When run it
 # docker run -d -p 8000:5000 -p 8001:5001 --name my-sybase sybase
 
-COPY sap-ase/scripts/start.sh /start.sh
+COPY scripts/start.sh /start.sh
 RUN chmod +x /start.sh
 CMD ["/start.sh"]
