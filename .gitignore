@@ -1,0 +1,4 @@
+.vscode
+images
+test/dataset/*.zip
+sap-ase/packages/*.tgz

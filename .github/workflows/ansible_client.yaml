@@ -1,0 +1,73 @@
+name: Ansible PyODBC
+
+on:
+ push:
+  paths:
+    - 'ansible/**'
+    - 'test/**'
+    - '.github/workflows/ansible_client.yaml'
+  pull_request:
+    paths:
+    - 'ansible/**'
+    - 'test/**'
+    - '.github/workflows/ansible_client.yaml'
+
+env:
+  IMAGE: "sqlops/ansible-pyodbc"
+  DOCKERFILE: "./ansible/Dockerfile"
+  ENV_FILE: "./ansible/.env"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: FranzDiebold/github-env-vars-action@v1.2.1
+      - name: Checkout code base
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+      
+      - name: Set ENV variables
+        run: |
+          cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      
+      - name: Login to quay.io
+        uses: docker/login-action@v1 
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }} 
+
+      - name: Build & Push image to Docker
+        id: dockerhub
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: docker.io/${{ env.IMAGE }}:${{ env.SEMVER_MAJOR }},docker.io/${{ env.IMAGE }}:${{ env.SEMVER_MINOR }},docker.io/${{ env.IMAGE }}:${{ env.SEMVER_PATCH }},docker.io/${{ env.IMAGE }}:${{ env.SEMVER_TAG }},docker.io/${{ env.IMAGE }}:latest
+          file: ${{ env.DOCKERFILE }}
+          platforms: linux/amd64
+      
+      - name: Push image to Quay
+        id: quay
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: quay.io/${{ env.IMAGE }}:${{ env.SEMVER_MAJOR }},quay.io/${{ env.IMAGE }}:${{ env.SEMVER_MINOR }},quay.io/${{ env.IMAGE }}:${{ env.SEMVER_PATCH }},quay.io/${{ env.IMAGE }}:${{ env.SEMVER_TAG }},quay.io/${{ env.IMAGE }}:latest
+          file: ${{ env.DOCKERFILE }}
+          platforms: linux/amd64

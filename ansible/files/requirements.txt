@@ -1,0 +1,5 @@
+ansible>=2.8<=2.9
+httpie>=2.0<=2.3
+pymssql>=2.0<=2.1
+pandas>=1.0<=1.1
+dask>=2.0<=2.30

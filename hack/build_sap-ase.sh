@@ -1,0 +1,1 @@
+docker image build -f sap-ase/Dockerfile -t sqlops/sybase ./
